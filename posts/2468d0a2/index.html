@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>RFID安全之关于某校水卡的破解 | Echo&#39;s Blog | 在运维的道路上越走越远</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="RFID,NFC,无线安全">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="仅作技术研究与交流，请勿用于非法用途，否则后果自负">
+<meta name="keywords" content="RFID,NFC,无线安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RFID安全之关于某校水卡的破解">
+<meta property="og:url" content="http://www.deops.cn/posts/2468d0a2/index.html">
+<meta property="og:site_name" content="Echo&#39;s Blog">
+<meta property="og:description" content="仅作技术研究与交流，请勿用于非法用途，否则后果自负">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fwp1w5mgl9j30kx0dfdky.jpg">
+<meta property="og:image" content="https://wx4.sinaimg.cn/mw690/006ALkzYgy1fwp2769z25j30l80dy44u.jpg">
+<meta property="og:image" content="https://wx2.sinaimg.cn/mw690/006ALkzYgy1fwp29htm25j30pp0ijthe.jpg">
+<meta property="og:image" content="https://wx4.sinaimg.cn/mw690/006ALkzYgy1fwp2joqjtpj30pz0eg7aj.jpg">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fwp40axvtnj30qo0i2wg7.jpg">
+<meta property="og:image" content="https://wx2.sinaimg.cn/mw690/006ALkzYgy1fwp55r5t5sj30as0altcg.jpg">
+<meta property="og:image" content="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fwp62mw6m2j30go08rweq.jpg">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fwp62nb7wdj30m80m8dki.jpg">
+<meta property="og:image" content="https://wx2.sinaimg.cn/mw690/006ALkzYgy1fwp62oe47sj30zk0qo1kx.jpg">
+<meta property="og:image" content="https://wx2.sinaimg.cn/mw690/006ALkzYgy1fwp62nlxksj30rs0rsn5x.jpg">
+<meta property="og:updated_time" content="2018-12-07T07:26:44.639Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RFID安全之关于某校水卡的破解">
+<meta name="twitter:description" content="仅作技术研究与交流，请勿用于非法用途，否则后果自负">
+<meta name="twitter:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fwp1w5mgl9j30kx0dfdky.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="Echo&#39;s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu"  class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" >
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/"  >
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives"  >
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags"  >
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/album"  >
+                    <i class="icon icon-lg icon-image"></i>
+                    <span>相 册</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about"  >
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://t.cn/RrDDg7q" target="_parent"title="Email" >
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank"title="Github" >
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="微博" href="https://weibo.com/u/6040025614" target="_blank"title="微博" >
+                <i class="icon icon-lg icon-weibo weibo"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RFID安全之关于某校水卡的破解</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#实际安全测试"><span class="post-toc-number">1.</span> <span class="post-toc-text">#实际安全测试</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#科普部分"><span class="post-toc-number">2.</span> <span class="post-toc-text">#科普部分</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#这里介绍一些比较常见的卡片类型"><span class="post-toc-number">3.</span> <span class="post-toc-text">这里介绍一些比较常见的卡片类型</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#常见工具："><span class="post-toc-number">4.</span> <span class="post-toc-text">常见工具：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#一些数据分析工具"><span class="post-toc-number">5.</span> <span class="post-toc-text">一些数据分析工具</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-RFID安全之关于某校水卡的破解"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RFID安全之关于某校水卡的破解</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-10-29 09:11:16" datetime="2018-10-29T01:11:16.000Z"  itemprop="datePublished">2018-10-29</time>
+
+            <br id="mybreak"/>
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>次浏览
+</span>
+
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">4</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><strong>仅作技术研究与交流，请勿用于非法用途，否则后果自负</strong><br><a id="more"></a></p>
+<p>最近天气比较凉，想洗点热水澡，无奈两个宿舍供用一张热水卡，很快就刷完余额了。然后一想到又要冲饭卡吃饭又要冲水卡洗澡，学校的物价还贼鸡儿贵，像我这种是穷逼的日子是越来越不好过了。<br>然后……<br>我有个大胆想法(手动滑稽)<br>来次社区送温暖</p>
+<hr>
+
+<p>现在关于RFID技术的文章在网上已经不少了，百度一搜一大堆。然后这次我也来写一篇关于学校热水卡的破解。</p>
+<h4 id="实际安全测试"><a href="#实际安全测试" class="headerlink" title="#实际安全测试"></a>#实际安全测试</h4><p><strong>工具：</strong><br>ACR122U-A9读卡器，某宝100多块钱有点贵；<br>入门的话可以选择便宜很多的<code>PN532</code>无线模块开发板，某宝50块钱不到；<br>电脑的话Windows或者Linux都可以；<br>准备：根据卡片信息查找相关信息、四周无人、刷卡器周围是否有网线、判断水卡类型<br>一张可用的水卡+一张没有数据的UID白卡；</p>
+<p><strong>1. 首先读取水卡，判断水卡类型 和 读取基本内容</strong><br>我这里推荐使用Linux来破解，之前弄RFID的时候，发现很多win下的工具无法写入，不知道为什么，看来还是LInux下的东西比较靠谱点。<br>直接将ACR122U插入电脑，让kali连接，使用<code>mfoc</code>命令读取卡片的内容</p>
+<blockquote>
+<p>mfoc -O -k ffffffffffff card.mfd<br>-O,读取并导出保存到card.mfd，-k ff…，使用默认密钥来破译加密内容</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fwp1w5mgl9j30kx0dfdky.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx4.sinaimg.cn/mw690/006ALkzYgy1fwp2769z25j30l80dy44u.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx2.sinaimg.cn/mw690/006ALkzYgy1fwp29htm25j30pp0ijthe.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>导出后使用<code>hexdump</code>命令查看数据并分析</p>
+<blockquote>
+<p>hexdump card.mfd</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx4.sinaimg.cn/mw690/006ALkzYgy1fwp2joqjtpj30pz0eg7aj.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>很幸运，我们学校的的水卡加密很简单，单区间加密<br>破解到这里基本已经完成了，知道密码就可以完全复制一张出来了<br>但是，好奇心使我想继续研究下去，前面那些完全没有技术含量，</p>
+<p><strong>2. 数据分析及修改</strong><br>RFID的破解都只是铺垫，数据修改才是整个过程最有趣的地方，因为每种卡片的数据算法不一样，网络上的数据分析只能提供参考，不能直接得出数据的算法。只能通过多次导出数据，对比变化的数据猜测寻找出具体的算法。<br>数据分析需要进过多次比较分析，寻找比较找出正确的规律，我这次大大小小肝了一个星期的时间才完成了分析，真实难受<br>进过多次刷卡后，对比变化的数据如下：<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fwp40axvtnj30qo0i2wg7.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure><br>对比这两次数据 我发现只有3扇区的1块和2块数据发生了改变</p>
+<p><strong>3. 重点分析3扇区中的数据 涉及变动的有前面的两个字节和最后一个字节</strong><br>因为对十六进制运算不熟悉，所以先直接转换成十进制方便运算找规律，因为金额与数据有关，我也将卡内余额转换成16进制去对比。<br>但是因为有小数点，可以扩大倍数，可以10 100 1000倍–尝试分析。<br>因为我水卡后面有两位小数，按着思维走小数点尝试100倍。<br>首先我这里的余额是86.60元，然后将金额放大100倍8660转16进制后，发现余额是第一和第二字节的倒序，多组数据验证后正确！<br>而最后一个字节，对比数据发现它随着金额的变化而变化，即该字节应该是校验字节<br>校验字节的算法：将余额的值进行异或运，然后取反，即可得到该字节的校验码<br>例如：21 xor D4 = F5 取反 = 28</p>
+<p>尝试修改数据，并验证，可以用winhex打开dump文件修改<br>比如修改成100.00元，用10000然后转16进制–2710–倒序–1027,然后计算校验码即6A<br>保存写入，OK<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx2.sinaimg.cn/mw690/006ALkzYgy1fwp55r5t5sj30as0altcg.jpg" alt="随便找张图吧，忘记拍下来了(敷衍)" title="">
+                </div>
+                <div class="image-caption">随便找张图吧，忘记拍下来了(敷衍)</div>
+            </figure></p>
+<p><strong>后记</strong><br>该水卡的加密规则不是很复杂，而对于有些涉及次数、时间、滚动码验证的卡怎么破解，因没有其他的卡和设备所以没有深入了解后续的其他破解</p>
+<h4 id="科普部分"><a href="#科普部分" class="headerlink" title="#科普部分"></a>#科普部分</h4><!--废话开篇-->
+<p>RFID是射频识别(Radio Frequency Identification，RFID)的意思，像什么ID卡、IC卡、RFID卡、NFC卡、Mifare卡的都是RFID技术（这些俗称银行卡、公交卡、饭卡、水卡、门禁卡等…)</p>
+<h4 id="这里介绍一些比较常见的卡片类型"><a href="#这里介绍一些比较常见的卡片类型" class="headerlink" title="这里介绍一些比较常见的卡片类型"></a>这里介绍一些比较常见的卡片类型</h4><p><strong>Mifare S50（简称M1)，</strong><br>最常见的卡，独一无二的UID号，无存储修改数据（学生卡，饭卡，公交卡，门禁卡等）<br><strong>Mifare UltraLight(简称MO)，</strong><br>低成本卡，出厂固化UID，可存储修改数据（地铁卡，公交卡）<br><strong>Mifare UID（中国魔术卡，简称UID卡），</strong><br>M1卡的变异版本，可以修改UID号，国外叫Chinese magic card,可以用来完整克隆M1 S50的数据，但是可以被识别屏蔽<br><strong>FUID</strong><br>支持修改UID号，但修改一次后将被锁死成M1卡，大天朝就是牛逼<br><strong>CUID</strong><br>支持多次重写UID号，这难不倒我们智慧的人民群众</p>
+<h4 id="常见工具："><a href="#常见工具：" class="headerlink" title="常见工具："></a>常见工具：</h4><ol>
+<li>PN532、ACR122U-A、Proxmark3、Chameleon Mini等相关工具<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fwp62mw6m2j30go08rweq.jpg" alt="PN532" title="">
+                </div>
+                <div class="image-caption">PN532</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fwp62nb7wdj30m80m8dki.jpg" alt="ACR122U-A" title="">
+                </div>
+                <div class="image-caption">ACR122U-A</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx2.sinaimg.cn/mw690/006ALkzYgy1fwp62oe47sj30zk0qo1kx.jpg" alt="Proxmark3" title="">
+                </div>
+                <div class="image-caption">Proxmark3</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx2.sinaimg.cn/mw690/006ALkzYgy1fwp62nlxksj30rs0rsn5x.jpg" alt="Chameleon Mini" title="">
+                </div>
+                <div class="image-caption">Chameleon Mini</div>
+            </figure>
+</li>
+</ol>
+<h4 id="一些数据分析工具"><a href="#一些数据分析工具" class="headerlink" title="一些数据分析工具"></a>一些数据分析工具</h4><p>太多了懒得找，我也没有。。。<br>一个WinHex,一个kali就完事了</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2018-12-07T07:26:44.639Z" itemprop="dateUpdated">2018-12-07 15:26:44</time>
+</span>
+
+
+        
+    </div>
+    <footer>
+        <div onclick="location.href='http://www.deops.cn'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NFC/">NFC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RFID/">RFID</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/无线安全/">无线安全</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.deops.cn/posts/2468d0a2/&title=《RFID安全之关于某校水卡的破解》 — Echo's Blog&pic=http://www.deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.deops.cn/posts/2468d0a2/&title=《RFID安全之关于某校水卡的破解》 — Echo's Blog&source=仅作技术研究与交流，请勿用于非法用途，否则后果自负" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.deops.cn/posts/2468d0a2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RFID安全之关于某校水卡的破解》 — Echo's Blog&url=http://www.deops.cn/posts/2468d0a2/&via=http://www.deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.deops.cn/posts/2468d0a2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/af5d3de9/" id="post-prev" class="post-nav-link">
+        <h4 class="title" >
+          上一篇：MSF框架实现&#34;永恒之蓝&#34;的攻击演示
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/ef11486f/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：安卓应用程序渗透测试（一）">下一篇：安卓应用程序渗透测试（一）</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2018
+            <i class="icon icon-lg icon-heartbeat"></i>
+            <a href="http://www.deops.cn">Echo</a>
+            <br/>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br/>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br/>
+
+        <span>
+            
+	<i class="icon icon-lg icon-user">
+<span id="busuanzi_container_site_uv" style='display:none'>
+       访问用户：<span id="busuanzi_value_site_uv"></span>
+    </span>人</i>
+    ·
+    <i class="icon icon-lg icon-eye">
+    <span id="busuanzi_container_site_pv" style='display:none'>
+      访问次数：<span id="busuanzi_value_site_pv"></span>
+    </span>次
+    </i>
+
+
+        </span>
+        <br/>
+
+        <!--<span class="license"><a  target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>-->
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.deops.cn/posts/2468d0a2/&title=《RFID安全之关于某校水卡的破解》 — Echo's Blog&pic=http://www.deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.deops.cn/posts/2468d0a2/&title=《RFID安全之关于某校水卡的破解》 — Echo's Blog&source=仅作技术研究与交流，请勿用于非法用途，否则后果自负" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.deops.cn/posts/2468d0a2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RFID安全之关于某校水卡的破解》 — Echo's Blog&url=http://www.deops.cn/posts/2468d0a2/&via=http://www.deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.deops.cn/posts/2468d0a2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABv0lEQVR42u3aS46EMAwFQO5/aUaabQvm2SZpRqqsUH9CwcKKX3Ic8Th/x9X15/j879Xnx4qBi4s75p63437q+9+cwcgNuLi4+7kJJS9SV98m13/YcHFxX8btrT2Sh8fFxf2/3B66WuBwcXHfw500J8nvE+7DvRouLu6AOw9M59db811cXNzBrkRejKpLn+bdcXFxt3Dvt0Cqwce8OEZlDhcXdzH3HpqXs+qWajNYwcXF3cKtNiRJCNI7eJFs5eLi4u7k9gpKte3JX0d1flxc3BXcyVbHPCIpvxRcXNyN3F4kmi9Z5o0WLi7uTm6V3muHHlt54eLiLub2QooEWi1k0Zy4uLhbuHmV6MWp+SKpKsHFxV3HrRapeeiZFK/LO+Li4m7hTiad4PKNligwxcXFfZTbCzt6oWdewi5fAS4u7kbuU8uXcrRRDXBxcXE3cvPRO7b11KENXFzcPdxqQelB8znzb3FxcVdz86Jz/6zVgpgf3cDFxf0Wt1q8qmHovAXCxcV9JzcvfFHMER//OpInxsXFfQG3eoSiuhmDi4v7Bm61USlvkRbjjwd6NVxc3AG3F5gmy5c8Qu0FMbi4uAu4PwCctHvFRksRAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0" ></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0" ></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2018/06/29");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+<script src="/live2d-widget/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2d-widget/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2d-widget/assets/hijiki.model.json"},"display":{"position":"left","width":50,"height":100,"hOffset":50},"mobile":{"show":false},"log":false});</script></body>
+</html>

